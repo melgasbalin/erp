@@ -1,0 +1,49 @@
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-tr from-slate-950 via-indigo-950 to-slate-950 px-4 py-12 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full space-y-8 bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-2xl shadow-2xl transition duration-500">
+    <div>
+      <div class="mx-auto h-12 w-12 rounded-full bg-gradient-to-tr from-indigo-500 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+        <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+        </svg>
+      </div>
+      <h2 class="mt-6 text-center text-3xl font-extrabold text-white tracking-tight">
+        Iniciar Sesión
+      </h2>
+      <p class="mt-2 text-center text-sm text-slate-400">
+        Ingresa tus credenciales para acceder al ERP
+      </p>
+    </div>
+
+    <form #form="ngForm" (ngSubmit)="onSubmit(form.value)" class="mt-8 space-y-6">
+      <div class="space-y-4">
+        <div>
+          <label for="email" class="block text-sm font-medium text-slate-300">Correo Electrónico</label>
+          <input id="email" type="email" name="email" [(ngModel)]="loginForm.email" required 
+            class="mt-1 block w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
+            placeholder="ejemplo@correo.com" />
+        </div>
+
+        <div>
+          <label for="password" class="block text-sm font-medium text-slate-300">Contraseña</label>
+          <input id="password" type="password" name="password" [(ngModel)]="loginForm.password" required 
+            class="mt-1 block w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
+            placeholder="••••••••" />
+        </div>
+      </div>
+
+      <div *ngIf="error" class="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm animate-pulse">
+        <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+        </svg>
+        <span>{{ error }}</span>
+      </div>
+
+      <div>
+        <button type="submit" [disabled]="form.invalid"
+          class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-xl text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-indigo-500 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none cursor-pointer">
+          Entrar al Sistema
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

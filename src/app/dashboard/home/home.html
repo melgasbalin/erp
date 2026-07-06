@@ -1,0 +1,167 @@
+<div class="min-h-screen bg-slate-50 text-slate-800 font-sans flex relative overflow-x-hidden">
+
+  <!-- Sidebar reutilizable -->
+  <app-sidebar
+    [isOpen]="isSidebarOpen"
+    [user]="user"
+    (toggled)="toggleSidebar()">
+  </app-sidebar>
+
+  <!-- Contenido derecho principal -->
+  <div class="flex-1 flex flex-col min-w-0 min-h-screen transition-all duration-300"
+    [class.md:pl-64]="isSidebarOpen" [class.md:pl-0]="!isSidebarOpen">
+
+    <!-- Navigation Header -->
+    <nav class="bg-white border-b border-slate-200 px-6 py-4 shadow-sm flex items-center justify-between sticky top-0 z-30">
+      <div class="flex items-center gap-3">
+        <!-- Botón hamburguesa -->
+        <button (click)="toggleSidebar()" class="text-slate-600 hover:text-slate-900 focus:outline-none cursor-pointer p-2 hover:bg-slate-100 rounded-lg transition">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+        <span class="text-lg font-bold text-slate-800">Panel Operacional</span>
+      </div>
+
+      <div class="flex items-center gap-4" *ngIf="user">
+        <!-- Campana de notificaciones -->
+        <button class="text-slate-400 hover:text-slate-600 p-2 hover:bg-slate-100 rounded-lg transition relative cursor-pointer">
+          <span class="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-indigo-600"></span>
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+          </svg>
+        </button>
+        <div class="h-9 w-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-extrabold text-sm border border-indigo-200">
+          {{ user.name.charAt(0) }}
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6 md:p-8 space-y-8 overflow-y-auto">
+
+      <!-- Welcome Hero Section -->
+      <div class="bg-gradient-to-r from-indigo-600 to-purple-700 rounded-2xl p-6 md:p-8 text-white shadow-xl shadow-indigo-600/10 relative overflow-hidden">
+        <div class="absolute right-0 top-0 translate-x-12 -translate-y-12 h-64 w-64 rounded-full bg-white/10 blur-3xl"></div>
+        <div class="relative z-10 space-y-2">
+          <h1 class="text-3xl font-extrabold tracking-tight">¡Bienvenido de vuelta, {{ user?.name }}!</h1>
+          <p class="text-indigo-100 max-w-xl text-sm md:text-base">Panel de control de administración y ventas de tu sistema ERP. Aquí tienes el resumen operacional de hoy.</p>
+          <div class="inline-flex items-center gap-2 mt-4 px-3 py-1 bg-white/20 rounded-full text-xs font-semibold backdrop-blur-md">
+            <span class="h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
+            Nivel de Acceso:
+            <span class="uppercase tracking-wider font-extrabold">{{ user?.role }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metric Stat Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition duration-300 flex items-center justify-between">
+          <div class="space-y-1">
+            <span class="text-sm font-medium text-slate-500">Ventas del Mes</span>
+            <h3 class="text-2xl font-bold text-slate-900">$124,500.00</h3>
+            <span class="text-xs text-emerald-600 font-semibold">↑ +14.2% respecto a ayer</span>
+          </div>
+          <div class="h-12 w-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition duration-300 flex items-center justify-between">
+          <div class="space-y-1">
+            <span class="text-sm font-medium text-slate-500">Órdenes Activas</span>
+            <h3 class="text-2xl font-bold text-slate-900">42 órdenes</h3>
+            <span class="text-xs text-indigo-600 font-semibold">5 pendientes de despacho</span>
+          </div>
+          <div class="h-12 w-12 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition duration-300 flex items-center justify-between">
+          <div class="space-y-1">
+            <span class="text-sm font-medium text-slate-500">Usuarios ERP</span>
+            <h3 class="text-2xl font-bold text-slate-900">2 Registrados</h3>
+            <span class="text-xs text-slate-500">1 Administrador / 1 Usuario</span>
+          </div>
+          <div class="h-12 w-12 rounded-xl bg-pink-50 flex items-center justify-center text-pink-600">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+            </svg>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Recent Activity Table -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-5 border-b border-slate-200 flex items-center justify-between bg-slate-50/50">
+          <div>
+            <h3 class="font-bold text-lg text-slate-900">Actividad Reciente en el Sistema</h3>
+            <p class="text-xs text-slate-500">Registros y acciones del ERP realizadas en las últimas horas</p>
+          </div>
+          <span class="px-3 py-1 bg-indigo-100 text-indigo-700 text-xs font-bold rounded-full">En Vivo</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50 text-slate-500 text-xs font-bold uppercase border-b border-slate-200">
+                <th class="px-6 py-4">Usuario</th>
+                <th class="px-6 py-4">Acción</th>
+                <th class="px-6 py-4">Detalle</th>
+                <th class="px-6 py-4">Fecha/Hora</th>
+                <th class="px-6 py-4">Estado</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-sm text-slate-600">
+              <tr class="hover:bg-slate-50/50 transition">
+                <td class="px-6 py-4 font-semibold text-slate-900">Usuario Admin</td>
+                <td class="px-6 py-4">Acceso Autorizado</td>
+                <td class="px-6 py-4">Inicio de sesión exitoso al panel ERP</td>
+                <td class="px-6 py-4 text-xs text-slate-500">Hace unos momentos</td>
+                <td class="px-6 py-4">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">Completado</span>
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/50 transition">
+                <td class="px-6 py-4 font-semibold text-slate-900">Usuario Normal</td>
+                <td class="px-6 py-4">Consulta de Stock</td>
+                <td class="px-6 py-4">Inventario revisado en bodega principal</td>
+                <td class="px-6 py-4 text-xs text-slate-500">Hace 10 min</td>
+                <td class="px-6 py-4">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">Completado</span>
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/50 transition">
+                <td class="px-6 py-4 font-semibold text-slate-900">Usuario Admin</td>
+                <td class="px-6 py-4">Registro de Pago</td>
+                <td class="px-6 py-4">Aprobación de factura #F-490 por $1,250.00</td>
+                <td class="px-6 py-4 text-xs text-slate-500">Hace 2 horas</td>
+                <td class="px-6 py-4">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">Completado</span>
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-50/50 transition">
+                <td class="px-6 py-4 font-semibold text-slate-900">Sistema ERP</td>
+                <td class="px-6 py-4">Respaldo Automático</td>
+                <td class="px-6 py-4">Copia de seguridad en la nube (AWS S3)</td>
+                <td class="px-6 py-4 text-xs text-slate-500">Hace 4 horas</td>
+                <td class="px-6 py-4">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">En Proceso</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+</div>
