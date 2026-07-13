@@ -1,0 +1,236 @@
+<div class="min-h-screen bg-slate-50 text-slate-800 font-sans flex relative overflow-x-hidden">
+
+  <!-- Sidebar reutilizable -->
+  <app-sidebar
+    [isOpen]="isSidebarOpen"
+    [user]="user"
+    (toggled)="toggleSidebar()">
+  </app-sidebar>
+
+  <!-- Contenido derecho principal -->
+  <div class="flex-1 flex flex-col min-w-0 min-h-screen transition-all duration-300"
+    [class.md:pl-64]="isSidebarOpen" [class.md:pl-0]="!isSidebarOpen">
+
+    <!-- Navigation Header -->
+    <nav class="bg-white border-b border-slate-200 px-6 py-4 shadow-sm flex items-center justify-between sticky top-0 z-30">
+      <div class="flex items-center gap-3">
+        <!-- Botón hamburguesa -->
+        <button (click)="toggleSidebar()" class="text-slate-600 hover:text-slate-900 focus:outline-none cursor-pointer p-2 hover:bg-slate-100 rounded-lg transition">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+        <span class="text-lg font-bold text-slate-800">Registro de Persona</span>
+      </div>
+
+      <div class="flex items-center gap-4" *ngIf="user">
+        <button class="text-slate-400 hover:text-slate-600 p-2 hover:bg-slate-100 rounded-lg transition relative cursor-pointer">
+          <span class="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-indigo-600"></span>
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+          </svg>
+        </button>
+        <div class="h-9 w-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-extrabold text-sm border border-indigo-200">
+          {{ user.name.charAt(0) }}
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6 md:p-8 space-y-8 overflow-y-auto">
+
+      <!-- Page Header Banner -->
+      <div class="bg-gradient-to-r from-indigo-600 to-purple-700 rounded-2xl p-6 md:p-8 text-white shadow-xl shadow-indigo-600/10 relative overflow-hidden">
+        <div class="absolute right-0 top-0 translate-x-12 -translate-y-12 h-64 w-64 rounded-full bg-white/10 blur-3xl"></div>
+        <div class="relative z-10 space-y-2">
+          <h1 class="text-3xl font-extrabold tracking-tight">Registro de Persona</h1>
+          <p class="text-indigo-100 max-w-xl text-sm md:text-base">Completa el formulario para registrar un nuevo usuario en el sistema ERP.</p>
+        </div>
+      </div>
+
+      <!-- Success Alert -->
+      <div *ngIf="successMessage"
+        class="flex items-center gap-3 px-5 py-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-emerald-700 text-sm font-semibold shadow-sm animate-pulse">
+        <svg class="h-5 w-5 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        ¡Registro exitoso! El usuario ha sido registrado correctamente.
+      </div>
+
+      <!-- Form Card -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+
+        <!-- Card Header -->
+        <div class="px-6 py-5 border-b border-slate-200 bg-slate-50/50 flex items-center gap-3">
+          <div class="h-9 w-9 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+            </svg>
+          </div>
+          <div>
+            <h2 class="font-bold text-slate-900">Datos del Usuario</h2>
+            <p class="text-xs text-slate-500">Los campos marcados con * son obligatorios</p>
+          </div>
+        </div>
+
+        <!-- Form Body -->
+        <form [formGroup]="registroForm" (ngSubmit)="onSubmit()" class="p-6 md:p-8 space-y-6">
+
+          <!-- Nombre y Apellido -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-1.5">
+              <label for="nombre" class="block text-sm font-semibold text-slate-700">Nombre *</label>
+              <input
+                type="text"
+                id="nombre"
+                formControlName="nombre"
+                placeholder="Ej. Juan"
+                class="w-full px-4 py-2.5 rounded-xl border text-sm text-slate-800 placeholder-slate-400 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition"
+                [class.border-slate-300]="!(submitted && f['nombre'].errors)"
+                [class.border-red-400]="submitted && f['nombre'].errors"
+                [class.focus:border-indigo-500]="!(submitted && f['nombre'].errors)">
+              <div *ngIf="submitted && f['nombre'].errors" class="text-xs text-red-500 mt-1 flex items-center gap-1">
+                <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span *ngIf="f['nombre'].errors['required']">El nombre es obligatorio</span>
+                <span *ngIf="f['nombre'].errors['minlength']">Mínimo 2 caracteres</span>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <label for="apellido" class="block text-sm font-semibold text-slate-700">Apellido *</label>
+              <input
+                type="text"
+                id="apellido"
+                formControlName="apellido"
+                placeholder="Ej. Pérez"
+                class="w-full px-4 py-2.5 rounded-xl border text-sm text-slate-800 placeholder-slate-400 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition"
+                [class.border-slate-300]="!(submitted && f['apellido'].errors)"
+                [class.border-red-400]="submitted && f['apellido'].errors">
+              <div *ngIf="submitted && f['apellido'].errors" class="text-xs text-red-500 mt-1 flex items-center gap-1">
+                <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span *ngIf="f['apellido'].errors['required']">El apellido es obligatorio</span>
+                <span *ngIf="f['apellido'].errors['minlength']">Mínimo 2 caracteres</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="space-y-1.5">
+            <label for="email" class="block text-sm font-semibold text-slate-700">Email *</label>
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              placeholder="ejemplo@correo.com"
+              class="w-full px-4 py-2.5 rounded-xl border text-sm text-slate-800 placeholder-slate-400 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition"
+              [class.border-slate-300]="!(submitted && f['email'].errors)"
+              [class.border-red-400]="submitted && f['email'].errors">
+            <div *ngIf="submitted && f['email'].errors" class="text-xs text-red-500 mt-1 flex items-center gap-1">
+              <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <span *ngIf="f['email'].errors['required']">El email es obligatorio</span>
+              <span *ngIf="f['email'].errors['email']">Ingrese un email válido</span>
+            </div>
+          </div>
+
+          <!-- Teléfono y Fecha de Nacimiento -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-1.5">
+              <label for="telefono" class="block text-sm font-semibold text-slate-700">Teléfono <span class="text-slate-400 font-normal">(opcional)</span></label>
+              <input
+                type="tel"
+                id="telefono"
+                formControlName="telefono"
+                placeholder="10 dígitos"
+                class="w-full px-4 py-2.5 rounded-xl border text-sm text-slate-800 placeholder-slate-400 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition"
+                [class.border-slate-300]="!(submitted && f['telefono'].errors)"
+                [class.border-red-400]="submitted && f['telefono'].errors">
+              <div *ngIf="submitted && f['telefono'].errors" class="text-xs text-red-500 mt-1 flex items-center gap-1">
+                <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span *ngIf="f['telefono'].errors['pattern']">Ingrese un número de 10 dígitos</span>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <label for="fechaNacimiento" class="block text-sm font-semibold text-slate-700">Fecha de Nacimiento *</label>
+              <input
+                type="date"
+                id="fechaNacimiento"
+                formControlName="fechaNacimiento"
+                class="w-full px-4 py-2.5 rounded-xl border text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition"
+                [class.border-slate-300]="!(submitted && f['fechaNacimiento'].errors)"
+                [class.border-red-400]="submitted && f['fechaNacimiento'].errors">
+              <div *ngIf="submitted && f['fechaNacimiento'].errors" class="text-xs text-red-500 mt-1 flex items-center gap-1">
+                <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span *ngIf="f['fechaNacimiento'].errors['required']">La fecha de nacimiento es obligatoria</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Divider -->
+          <div class="border-t border-slate-100 pt-2">
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Seguridad</p>
+          </div>
+
+          <!-- Contraseñas -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-1.5">
+              <label for="password" class="block text-sm font-semibold text-slate-700">Contraseña *</label>
+              <input
+                type="password"
+                id="password"
+                formControlName="password"
+                placeholder="Mínimo 6 caracteres"
+                class="w-full px-4 py-2.5 rounded-xl border text-sm text-slate-800 placeholder-slate-400 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition"
+                [class.border-slate-300]="!(submitted && f['password'].errors)"
+                [class.border-red-400]="submitted && f['password'].errors">
+              <div *ngIf="submitted && f['password'].errors" class="text-xs text-red-500 mt-1 flex items-center gap-1">
+                <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span *ngIf="f['password'].errors['required']">La contraseña es obligatoria</span>
+                <span *ngIf="f['password'].errors['minlength']">Mínimo 6 caracteres</span>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <label for="confirmPassword" class="block text-sm font-semibold text-slate-700">Confirmar Contraseña *</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                formControlName="confirmPassword"
+                placeholder="Repite tu contraseña"
+                class="w-full px-4 py-2.5 rounded-xl border text-sm text-slate-800 placeholder-slate-400 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition"
+                [class.border-slate-300]="!(submitted && f['confirmPassword'].errors)"
+                [class.border-red-400]="submitted && f['confirmPassword'].errors">
+              <div *ngIf="submitted && f['confirmPassword'].errors" class="text-xs text-red-500 mt-1 flex items-center gap-1">
+                <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span *ngIf="f['confirmPassword'].errors['required']">Confirma tu contraseña</span>
+                <span *ngIf="f['confirmPassword'].errors['passwordMismatch']">Las contraseñas no coinciden</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-slate-100">
+            <button
+              type="submit"
+              class="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white text-sm font-semibold shadow-sm shadow-indigo-600/20 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              [disabled]="registroForm.invalid && submitted">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+              </svg>
+              Registrar Usuario
+            </button>
+            <button
+              type="button"
+              (click)="onReset()"
+              class="flex-1 sm:flex-none sm:w-auto px-6 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 text-sm font-semibold transition duration-200 cursor-pointer">
+              Limpiar
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+    </main>
+  </div>
+
+</div>

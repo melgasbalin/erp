@@ -1,0 +1,11 @@
+/* registro.css - Estilos complementarios para inputs de fecha en dark mode */
+
+/* Estilo del input type="date" para consistencia con el resto */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}

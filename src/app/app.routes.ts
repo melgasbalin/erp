@@ -3,6 +3,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './auth/login/login';
 import { HomeComponent } from './dashboard/home/home';
 import { AuthGuard } from './core/guards/auth.guard'; // Asegúrate que exista
+import { RegistroComponent } from './pages/registro/registro';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -11,6 +12,7 @@ export const routes: Routes = [
         component: HomeComponent,
         canActivate: [AuthGuard]
     },
+    { path: 'registro', component: RegistroComponent, canActivate: [AuthGuard] },
     { path: '', redirectTo: '/login', pathMatch: 'full' },
     { path: '**', redirectTo: '/login' }
 ];
