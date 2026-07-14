@@ -1,0 +1,60 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+  <!-- Overlay oscuro -->
+  <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" (click)="onClose()"></div>
+
+  <!-- Modal content -->
+  <div class="relative w-full max-w-md bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden z-10 animate-[fadeIn_0.2s_ease-out]">
+    <!-- Header -->
+    <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
+      <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+        <svg class="h-5 w-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+        </svg>
+        Editar Registro
+      </h3>
+      <button (click)="onClose()" class="text-slate-400 hover:text-slate-600 hover:bg-slate-200/50 p-1.5 rounded-lg transition">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Body / Form -->
+    <form [formGroup]="editForm" (ngSubmit)="onSubmit()" class="p-6 space-y-4">
+      
+      <div class="space-y-1.5">
+        <label class="block text-sm font-semibold text-slate-700">Nombre *</label>
+        <input type="text" formControlName="nombre" placeholder="Nombre completo" 
+               class="w-full px-4 py-2.5 rounded-xl border text-sm text-slate-800 placeholder-slate-400 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition"
+               [class.border-red-400]="submitted && f['nombre'].errors"
+               [class.border-slate-300]="!(submitted && f['nombre'].errors)">
+        <div *ngIf="submitted && f['nombre'].errors" class="text-xs text-red-500 mt-1">El nombre es obligatorio y debe tener al menos 2 caracteres.</div>
+      </div>
+
+      <div class="space-y-1.5">
+        <label class="block text-sm font-semibold text-slate-700">Email *</label>
+        <input type="email" formControlName="email" placeholder="ejemplo@correo.com" 
+               class="w-full px-4 py-2.5 rounded-xl border text-sm text-slate-800 placeholder-slate-400 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition"
+               [class.border-red-400]="submitted && f['email'].errors"
+               [class.border-slate-300]="!(submitted && f['email'].errors)">
+        <div *ngIf="submitted && f['email'].errors" class="text-xs text-red-500 mt-1">Ingresa un email válido.</div>
+      </div>
+
+      <div class="space-y-1.5">
+        <label class="block text-sm font-semibold text-slate-700">Teléfono</label>
+        <input type="tel" formControlName="telefono" placeholder="Ej. 5550101" 
+               class="w-full px-4 py-2.5 rounded-xl border text-sm text-slate-800 placeholder-slate-400 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition">
+      </div>
+
+      <!-- Footer / Actions -->
+      <div class="flex gap-3 pt-4 border-t border-slate-100 mt-6">
+        <button type="button" (click)="onClose()" class="flex-1 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition">
+          Cancelar
+        </button>
+        <button type="submit" class="flex-1 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold shadow-sm shadow-indigo-600/20 transition">
+          Guardar Cambios
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
