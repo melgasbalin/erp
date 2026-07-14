@@ -13,8 +13,16 @@ export const routes: Routes = [
         component: HomeComponent,
         canActivate: [AuthGuard]
     },
-    { path: 'registro', component: RegistroComponent, canActivate: [AuthGuard] },
-    { path: 'search', component: SearchComponent, canActivate: [AuthGuard] },
+    { 
+        path: 'registro',
+         component: RegistroComponent, 
+         canActivate: [AuthGuard] 
+    },
+    { 
+        path: 'search',
+         component: SearchComponent, 
+         canActivate: [AuthGuard] 
+    },
     { path: '', redirectTo: '/login', pathMatch: 'full' },
     { path: '**', redirectTo: '/login' }
 ];
