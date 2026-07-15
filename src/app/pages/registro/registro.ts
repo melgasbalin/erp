@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { User } from '../../core/mock-data/mock-data';
 import { SidebarComponent } from '../../shared/sidebar/sidebar';
@@ -10,33 +9,33 @@ import { SidebarComponent } from '../../shared/sidebar/sidebar';
 @Component({
   selector: 'app-registro',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, SidebarComponent],
+  imports: [CommonModule, ReactiveFormsModule, SidebarComponent],
   templateUrl: './registro.html',
   styleUrls: ['./registro.css']
 })
 export class RegistroComponent implements OnInit {
   registroForm: FormGroup;
   submitted = false;
+  error: string | null = null;
   successMessage = false;
-
   user: User | null = null;
   isSidebarOpen: boolean = false;
 
   constructor(
-    private formBuilder: FormBuilder,
-    private router: Router,
-    private auth: AuthService
+    private fb: FormBuilder,
+    private auth: AuthService,
+    private router: Router
   ) {
-    this.registroForm = this.formBuilder.group({
+    this.registroForm = this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(2)]],
       apellido: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
-      telefono: ['', [Validators.pattern('^[0-9]{10}$')]],
+      telefono: ['', [Validators.pattern(/^\d{10}$/)]],
       fechaNacimiento: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]]
     }, {
-      validators: this.passwordMatchValidator
+      validators: this.passwordsMatchValidator
     });
   }
 
@@ -44,52 +43,61 @@ export class RegistroComponent implements OnInit {
     if (typeof window !== 'undefined') {
       this.isSidebarOpen = window.innerWidth >= 768;
     }
-    this.auth.currentUser$.subscribe((u) => {
-      if (this.user !== u) {
-        this.user = u;
-      }
+    this.auth.currentUser$.subscribe(u => {
+      this.user = u;
     });
+  }
+
+  /** Getter para acceder fácilmente a los controles del formulario en el HTML (f['campo']) */
+  get f() {
+    return this.registroForm.controls;
   }
 
   toggleSidebar(): void {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
 
-  // Validador personalizado para verificar que las contraseñas coincidan
-  passwordMatchValidator(form: FormGroup) {
+  passwordsMatchValidator(form: FormGroup) {
     const password = form.get('password');
     const confirmPassword = form.get('confirmPassword');
 
     if (password && confirmPassword && password.value !== confirmPassword.value) {
       confirmPassword.setErrors({ passwordMismatch: true });
-    } else {
-      confirmPassword?.setErrors(null);
+    } else if (confirmPassword?.hasError('passwordMismatch')) {
+      confirmPassword.setErrors(null);
     }
+
     return null;
   }
 
-  // Método para obtener los controles del formulario
-  get f() { return this.registroForm.controls; }
-
-  onSubmit() {
+  onSubmit(): void {
     this.submitted = true;
 
-    if (this.registroForm.invalid) {
-      return;
+    if (this.registroForm.valid) {
+      const formData = { ...this.registroForm.value };
+      delete formData.confirmPassword;
+
+      this.auth.register(formData).subscribe({
+        next: (response: any) => {
+          console.log('Registro exitoso:', response);
+          this.error = null;
+          this.successMessage = true;
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 2000);
+        },
+        error: (error: any) => {
+          console.error('Error en el registro:', error);
+          this.error = 'Error al registrar usuario. Por favor, inténtalo de nuevo.';
+        }
+      });
     }
-
-    console.log('Datos de registro:', this.registroForm.value);
-    this.successMessage = true;
-
-    setTimeout(() => {
-      this.successMessage = false;
-      this.onReset();
-    }, 3000);
   }
 
-  // Método para resetear el formulario
-  onReset() {
+  onReset(): void {
     this.submitted = false;
+    this.error = null;
+    this.successMessage = false;
     this.registroForm.reset();
   }
 }

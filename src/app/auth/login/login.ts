@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../core/services/auth.service'; // Ajusta la ruta si es necesaria
+import { AuthService } from '../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { take } from 'rxjs/operators'; 
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -11,31 +11,31 @@ import { take } from 'rxjs/operators';
   imports: [CommonModule, FormsModule],
   templateUrl: './login.html'
 })
-export class LoginComponent implements OnInit { // Implementar OnInit es buena práctica para inyectar dependencias
+export class LoginComponent implements OnInit {
   loginForm = { email: '', password: '' };
   error: string = '';
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private auth: AuthService, private router: Router) { }
 
-  ngOnInit() { } // Espacio reservado por la interfaz implícita o explícita
+  ngOnInit() { }
+  onSubmit(): void {
+    console.log('Intento de login:', this.loginForm);
 
-  onSubmit(data: any): void {
-    console.log('Intento de login:', data);
-    
-    this.auth.login(data.email).subscribe({ // Llamamos al servicio correctamente
-      next: (success: boolean) => {
-        if (success) {
-          // Una vez que el login simulado termina, tomamos el usuario actual del observable
+    // Call the actual login method with email and password
+    this.auth.login(this.loginForm.email, this.loginForm.password).subscribe({
+      next: (response) => {
+        if (response) {
+          // Get user data after successful login
           this.auth.currentUser$.pipe(
-            take(1) // Importante: Suscribirse una sola vez al valor actual
+            take(1)
           ).subscribe(user => {
-             if (user) {
-               this.error = '';
-               console.log('Usuario logueado con éxito:', user.name, user.role);
-               this.router.navigate(['/dashboard']);
-             } else {
-               this.error = 'Error al obtener la información del usuario.';
-             }
+            if (user) {
+              this.error = '';
+              console.log('Usuario logueado con éxito:', user.name, user.role);
+              this.router.navigate(['/dashboard']);
+            } else {
+              this.error = 'Error al obtener la información del usuario.';
+            }
           });
         } else {
           this.error = 'Credenciales incorrectas o usuario no encontrado.';
@@ -48,3 +48,4 @@ export class LoginComponent implements OnInit { // Implementar OnInit es buena p
     });
   }
 }
+
